@@ -17,12 +17,16 @@ df_copy = df.copy()
 # Convertir 'Código Producto' a tipo string
 df_copy['Código Producto'] = df_copy['Código Producto'].astype(str)
 
-# Limpiar y convertir las columnas numéricas
 for column in ['Ventas Galones', 'Ventas', 'Utilidad Bruta', 'Costos', 'Margen']:
-    # Reemplazar comas por puntos y eliminar espacios en blanco
-    df_copy[column] = df_copy[column].str.replace(',', '.').str.strip()
-    # Convertir a tipo float
-    df_copy[column] = pd.to_numeric(df_copy[column], errors='coerce')
+    if column in df_copy.columns:
+        # Convertir la columna a string, gestionando NaN
+        df_copy[column] = df_copy[column].astype(str)
+        # Reemplazar comas por puntos y eliminar espacios en blanco
+        df_copy[column] = df_copy[column].str.replace(',', '.').str.strip()
+        # Convertir a tipo float después de limpiar
+        df_copy[column] = pd.to_numeric(df_copy[column], errors='coerce')
+    else:
+        print(f"Advertencia: La columna '{column}' no existe en los datos.")
 
 # Verificar que las conversiones sean correctas
 print(df_copy.info())
