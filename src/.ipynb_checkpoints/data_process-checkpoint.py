@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 
 # Crear el path al archivo de datos en la carpeta bronze
-file_path = Path('data/bronze/ExporteCOL2023-2024.csv')
+file_path = 'C:/Users/david/OneDrive/Documentos/GitHub/DSA-Grupo5/data/bronze/ExporteCOL2023-2024.csv'
 
 # Cargar el archivo CSV en un DataFrame de pandas
 df = pd.read_csv(file_path, on_bad_lines='skip', sep=';')
