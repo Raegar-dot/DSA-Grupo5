@@ -1,0 +1,5 @@
+outs:
+- md5: e8c37c932795e47c37fa2aae7e7ddcb8
+  size: 7614681
+  hash: md5
+  path: ExporteCOL2023-2024_clean.csv
