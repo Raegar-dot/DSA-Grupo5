@@ -1,0 +1,6 @@
+[core]
+    remote = aws-remote
+['remote "fuentelocal"']
+    url = /tmp/dvcstore_DSA_G5
+['remote "aws-remote"']
+    url = s3://dsaproject-dvcstore
