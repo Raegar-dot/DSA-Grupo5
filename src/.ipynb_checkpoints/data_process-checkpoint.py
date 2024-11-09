@@ -61,5 +61,5 @@ print(df_copy.info())
 print(df_copy.describe())
 
 # Guardar el DataFrame limpio en un nuevo archivo CSV
-clean_file_path = Path('data/silver/ExporteCOL2023-2024_clean.csv')
+clean_file_path = Path('data/silver/ExporteCOL2022_2023_2024_clean.csv')
 df_copy.to_csv(clean_file_path, index=False)
