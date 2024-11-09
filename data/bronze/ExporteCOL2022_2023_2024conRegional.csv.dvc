@@ -1,0 +1,5 @@
+outs:
+- md5: f7fb64e5fd741e464636b76fc163948b
+  size: 55707000
+  hash: md5
+  path: ExporteCOL2022_2023_2024conRegional.csv
