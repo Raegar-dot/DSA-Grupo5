@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+from sklearn.preprocessing import LabelEncoder
 
 # Cargar datos limpios desde el nivel silver
 file_path = '../data/silver/ExporteCOL2022_2023_2024_clean.csv'
@@ -26,9 +27,17 @@ df_principales = df[df['Código Producto'].isin(productos_principales['Código P
 # Verificar el tamaño del nuevo conjunto de datos
 print("Dimensiones del conjunto de datos filtrado:", df_principales.shape)
 
+# Codificación de variables categóricas
+# One-Hot Encoding para variables con pocos valores únicos
+df_encoded_principales = pd.get_dummies(df_principales, columns=['Uen', 'Regional', 'Canal Comercial'], drop_first=True)
+
+# Codificación de 'Marquilla' con LabelEncoder
+label_encoder = LabelEncoder()
+df_encoded_principales['Marquilla'] = label_encoder.fit_transform(df_encoded_principales['Marquilla'])
+
 # Definir el path de salida para el archivo en el nivel gold
-clean_file_path = Path('../data/gold/ExporteCOL2022_2023_2024_top_products.csv')
+clean_file_path = Path('../data/gold/ExporteCOL2022_2023_2024_top_products_encoded.csv')
 
 # Guardar el DataFrame filtrado en el archivo CSV
-df_principales.to_csv(clean_file_path, index=False)
+df_encoded_principales.to_csv(clean_file_path, index=False)
 print(f"Archivo guardado en {clean_file_path}")
