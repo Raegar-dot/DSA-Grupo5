@@ -349,7 +349,7 @@ def generate_KPI(data_ad):
                         children=[
                             html.H4("Total Ventas COP", style={"textAlign": "center", "color": "#FFFFFF"}),
                             html.P(f"{kpi_total_ventas:,.0f}",  # Un valor aleatorio para ejemplo
-                                   style={"textAlign": "left", "fontSize": "25px", "color": "#FFFFFF"}),
+                                   style={"textAlign": "center", "fontSize": "25px", "color": "#FFFFFF"}),
                         ],
                         style={
                             "padding": "20px",
@@ -427,63 +427,73 @@ def generate_KPI(data_ad):
     )
 
 def plot_time_series_1(data_ad):
-
-    serie_ventas = data_ad.groupby("Marquilla")["Ventas"].sum().reset_index()
-    ventas_por_marquilla = ventas_por_marquilla.sort_values(by="Ventas", ascending=False)
-    ventas_por_marquilla = ventas_por_marquilla.head(10)
+    data_ad['Año'] = data_ad["Año"].astype(int)
+    data_ad['Mes'] = data_ad["Mes"].astype(int)
+    data_ad['Dia'] = 1
+    data_ad['Fecha'] = pd.to_datetime(data_ad['Año'].astype(str) + '-' + data_ad['Mes'].astype(str) + '-' + data_ad['Dia'].astype(str))
+    serie_ventas = data_ad.groupby('Fecha')['Ventas'].sum().reset_index()
 
     fig = go.Figure(
         data=[
-            go.Bar(
-                x=ventas_por_marquilla["Marquilla"],
-                y=ventas_por_marquilla["Ventas"],
-                marker=dict(color="#3498db"),
-                name="Ventas por Marquilla"
+            go.Scatter(
+                x=serie_ventas['Fecha'],
+                y=serie_ventas['Ventas'],
+                mode = 'lines+markers',
+                line=dict(color="#3498db"),
+                name="Ventas por Fecha"
             )
         ]
     )
 
     # Configuración del diseño del gráfico
     fig.update_layout(
-        title="Total de Ventas por Marquilla",
-        xaxis_title="Marquilla",
-        yaxis_title="Ventas",
+        title="Histórico de Ventas COP",
+        xaxis_title="Fecha",
+        yaxis_title="Ventas COP",
         paper_bgcolor="rgba(0,0,0,0)",  # Fondo transparente (usa color hexadecimal si prefieres)
         plot_bgcolor="#E8E8E8",  # Fondo del área de la gráfica
-        font=dict(color="#FFFFFF")  # Color de texto de los ejes y título
+        font=dict(color="#FFFFFF"),  # Color de texto de los ejes y título
+        xaxis = dict(   tickformat="%Y-%m",  # Formato de fecha para mostrar año y mes
+                        tickangle=45
+                        )  # Ángulo para evitar solapamiento de fechas)
     )
 
     return fig
 
-# def plot_time_series_2(data_ad):
 
-#     ventas_por_marquilla = data_ad.groupby("Marquilla")["Ventas"].sum().reset_index()
-#     ventas_por_marquilla = ventas_por_marquilla.sort_values(by="Ventas", ascending=False)
-#     ventas_por_marquilla = ventas_por_marquilla.head(10)
+def plot_time_series_2(data_ad):
+    data_ad['Año'] = data_ad["Año"].astype(int)
+    data_ad['Mes'] = data_ad["Mes"].astype(int)
+    data_ad['Dia'] = 1
+    data_ad['Fecha'] = pd.to_datetime(data_ad['Año'].astype(str) + '-' + data_ad['Mes'].astype(str) + '-' + data_ad['Dia'].astype(str))
+    serie_margen = data_ad.groupby('Fecha')['Margen'].mean().reset_index()
 
-#     fig = go.Figure(
-#         data=[
-#             go.Bar(
-#                 x=ventas_por_marquilla["Marquilla"],
-#                 y=ventas_por_marquilla["Ventas"],
-#                 marker=dict(color="#3498db"),
-#                 name="Ventas por Marquilla"
-#             )
-#         ]
-#     )
+    fig = go.Figure(
+        data=[
+            go.Scatter(
+                x=serie_margen['Fecha'],
+                y=serie_margen['Margen']*100,
+                mode = 'lines+markers',
+                line=dict(color="#3498db"),
+                name="Margen por Fecha"
+            )
+        ]
+    )
 
-#     # Configuración del diseño del gráfico
-#     fig.update_layout(
-#         title="Total de Ventas por Marquilla",
-#         xaxis_title="Marquilla",
-#         yaxis_title="Ventas",
-#         paper_bgcolor="rgba(0,0,0,0)",  # Fondo transparente (usa color hexadecimal si prefieres)
-#         plot_bgcolor="#E8E8E8",  # Fondo del área de la gráfica
-#         font=dict(color="#FFFFFF")  # Color de texto de los ejes y título
-#     )
+    # Configuración del diseño del gráfico
+    fig.update_layout(
+        title="Histórico del Margen",
+        xaxis_title="Fecha",
+        yaxis_title="% Margen",
+        paper_bgcolor="rgba(0,0,0,0)",  # Fondo transparente (usa color hexadecimal si prefieres)
+        plot_bgcolor="#E8E8E8",  # Fondo del área de la gráfica
+        font=dict(color="#FFFFFF"),  # Color de texto de los ejes y título
+        xaxis = dict(   tickformat="%Y-%m",  # Formato de fecha para mostrar año y mes
+                        tickangle=45
+                        )  # Ángulo para evitar solapamiento de fechas)
+    )
 
-#     return fig
-
+    return fig
 
 app.layout = html.Div(
     id="app-container",
@@ -527,10 +537,41 @@ app.layout = html.Div(
                         ),
                         # Second graph on the right
                         html.Div(
-                            className="six columns",    
-                            style={"display": "flex"},
+                            className="nine columns",    
+                            #style={"display": "flex"},
                             children=[
-                                generate_KPI(data_ad)
+                                html.Div(
+                                    children = generate_KPI(data_ad)
+                                ),                            
+                                html.Hr(),
+
+                                html.Div(
+                                    className="twelve columns",
+                                    children=[
+                                        html.Div(
+                                            className="six columns",
+                                            children =[dcc.Graph(
+                                                id = 'plot_time_series_1',
+                                                figure = plot_time_series_1(data_ad)
+                                            )
+                                            ]
+                                        ),
+
+                                        html.Div(
+                                            className="six columns",
+                                            children =[dcc.Graph(
+                                                id = 'plot_time_series_2',
+                                                figure = plot_time_series_2(data_ad)
+                                            )
+                                            ]
+                                        )
+
+                                    ]
+
+                                )  
+
+
+
                             ],
                         ),
                     ],
