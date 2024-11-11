@@ -307,11 +307,35 @@ def generate_filters():
     )
 
 
-def generate_KPI():
+def generate_KPI(data_ad):
     """
     Función para generar 4 KPIs, cada uno en su propia tarjeta.
     :return: Una lista de Divs que representan los 4 KPIs.
     """
+    if data_ad["Ventas"].sum() >= 1e6:
+        kpi_total_ventas = (data_ad["Ventas"].sum()) #/1e6
+    else: 
+        kpi_total_ventas = (data_ad["Ventas"].sum())
+
+
+    if data_ad["Ventas Galones"].sum() >= 1e6:
+        kpi_total_ventas_gl = (data_ad["Ventas Galones"].sum())  #/1e6
+    else: 
+        kpi_total_ventas_gl = (data_ad["Ventas Galones"].sum())
+
+
+    if data_ad["Utilidad Bruta"].sum() >= 1e6:
+        kpi_utilidad_bruta = (data_ad["Utilidad Bruta"].sum())  #/1e6
+    else: 
+        kpi_utilidad_bruta = (data_ad["Utilidad Bruta"].sum())
+
+    
+    if data_ad["Utilidad Bruta"].sum() / data_ad["Ventas"].sum() >= 1e6:
+        kpi_margen = (data_ad["Utilidad Bruta"].sum() / data_ad["Ventas"].sum())*100  #/1e6
+    else: 
+        kpi_margen = (data_ad["Utilidad Bruta"].sum() / data_ad["Ventas"].sum())*100
+
+
     return html.Div(
         className="row",  # Utilizamos un 'row' para alinear los KPIs horizontalmente
         children=[
@@ -324,8 +348,8 @@ def generate_KPI():
                         className="kpi-card",  # Clase para estilizar cada tarjeta de KPI
                         children=[
                             html.H4("Total Ventas COP", style={"textAlign": "center", "color": "#FFFFFF"}),
-                            html.P("1",  # Un valor aleatorio para ejemplo
-                                   style={"textAlign": "center", "fontSize": "30px", "color": "#FFFFFF"}),
+                            html.P(f"{kpi_total_ventas:,.0f}",  # Un valor aleatorio para ejemplo
+                                   style={"textAlign": "left", "fontSize": "25px", "color": "#FFFFFF"}),
                         ],
                         style={
                             "padding": "20px",
@@ -345,8 +369,8 @@ def generate_KPI():
                         className="kpi-card",
                         children=[
                             html.H4("Total Ventas gl", style={"textAlign": "center", "color": "#FFFFFF"}),
-                            html.P("2",  # Un valor aleatorio
-                                   style={"textAlign": "center", "fontSize": "30px", "color": "#FFFFFF"}),
+                            html.P(f"{kpi_total_ventas_gl:,.0f}",  # Un valor aleatorio
+                                   style={"textAlign": "center", "fontSize": "25px", "color": "#FFFFFF"}),
                         ],
                         style={
                             "padding": "20px",
@@ -366,8 +390,8 @@ def generate_KPI():
                         className="kpi-card",
                         children=[
                             html.H4("Utilidad Bruta COP", style={"textAlign": "center", "color": "#FFFFFF"}),
-                            html.P("3",  # Un valor aleatorio
-                                   style={"textAlign": "center", "fontSize": "30px", "color": "#FFFFFF"}),
+                            html.P(f"{kpi_utilidad_bruta:,.0f}",  # Un valor aleatorio
+                                   style={"textAlign": "center", "fontSize": "25px", "color": "#FFFFFF"}),
                         ],
                         style={
                             "padding": "20px",
@@ -387,8 +411,8 @@ def generate_KPI():
                         className="kpi-card",
                         children=[
                             html.H4("Margen", style={"textAlign": "center", "color": "#FFFFFF"}),
-                            html.P("4",  # Un valor aleatorio
-                                   style={"textAlign": "center", "fontSize": "30px", "color": "#FFFFFF"}),
+                            html.P(f"{kpi_margen:,.1f}%",  # Un valor aleatorio
+                                   style={"textAlign": "center", "fontSize": "25px", "color": "#FFFFFF"}),
                         ],
                         style={
                             "padding": "10px",
@@ -402,34 +426,34 @@ def generate_KPI():
         ]
     )
 
-# def plot_time_series_1(data_ad):
+def plot_time_series_1(data_ad):
 
-#     serie_ventas = data_ad.groupby("Marquilla")["Ventas"].sum().reset_index()
-#     ventas_por_marquilla = ventas_por_marquilla.sort_values(by="Ventas", ascending=False)
-#     ventas_por_marquilla = ventas_por_marquilla.head(10)
+    serie_ventas = data_ad.groupby("Marquilla")["Ventas"].sum().reset_index()
+    ventas_por_marquilla = ventas_por_marquilla.sort_values(by="Ventas", ascending=False)
+    ventas_por_marquilla = ventas_por_marquilla.head(10)
 
-#     fig = go.Figure(
-#         data=[
-#             go.Bar(
-#                 x=ventas_por_marquilla["Marquilla"],
-#                 y=ventas_por_marquilla["Ventas"],
-#                 marker=dict(color="#3498db"),
-#                 name="Ventas por Marquilla"
-#             )
-#         ]
-#     )
+    fig = go.Figure(
+        data=[
+            go.Bar(
+                x=ventas_por_marquilla["Marquilla"],
+                y=ventas_por_marquilla["Ventas"],
+                marker=dict(color="#3498db"),
+                name="Ventas por Marquilla"
+            )
+        ]
+    )
 
-#     # Configuración del diseño del gráfico
-#     fig.update_layout(
-#         title="Total de Ventas por Marquilla",
-#         xaxis_title="Marquilla",
-#         yaxis_title="Ventas",
-#         paper_bgcolor="rgba(0,0,0,0)",  # Fondo transparente (usa color hexadecimal si prefieres)
-#         plot_bgcolor="#E8E8E8",  # Fondo del área de la gráfica
-#         font=dict(color="#FFFFFF")  # Color de texto de los ejes y título
-#     )
+    # Configuración del diseño del gráfico
+    fig.update_layout(
+        title="Total de Ventas por Marquilla",
+        xaxis_title="Marquilla",
+        yaxis_title="Ventas",
+        paper_bgcolor="rgba(0,0,0,0)",  # Fondo transparente (usa color hexadecimal si prefieres)
+        plot_bgcolor="#E8E8E8",  # Fondo del área de la gráfica
+        font=dict(color="#FFFFFF")  # Color de texto de los ejes y título
+    )
 
-#     return fig
+    return fig
 
 # def plot_time_series_2(data_ad):
 
@@ -506,7 +530,7 @@ app.layout = html.Div(
                             className="six columns",    
                             style={"display": "flex"},
                             children=[
-                                generate_KPI()
+                                generate_KPI(data_ad)
                             ],
                         ),
                     ],
