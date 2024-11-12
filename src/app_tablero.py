@@ -501,6 +501,35 @@ app.layout = html.Div(
     children=[
         dcc.Interval(id="interval", interval=1000, n_intervals=0),
 
+        html.Div(
+            id="brand-section",
+            style={
+                "display": "flex",
+                "justify-content": "space-between",  # Para alinear la imagen a la izquierda y el título a la derecha
+                "align-items": "center",
+                "padding": "5px 20px",  # Padding para dar espacio
+                "background-color": "#2c3e50",  # Color de fondo, puedes cambiarlo
+            },
+            children=[
+                # Imagen del Brand (logo)
+                html.Img(
+                    src="/assets/logo.png",  # Asegúrate de tener la imagen en la carpeta 'assets'
+                    style={"height": "150px", "width": "auto"}  # Ajusta el tamaño de la imagen
+                ),
+                
+                # Título del Brand
+                html.H1(
+                    "Tablero de Seguimiento de Ventas y Utilidades",  # Título que deseas mostrar
+                    style={
+                        "color": "#ecf0f1",  # Color de texto
+                        "font-size": "30px",  # Tamaño de la fuente
+                        "font-weight": "bold",  # Negrita
+                        "margin": "0",  # Eliminar márgenes
+                    }
+                ),
+            ],
+        ),
+
         # Sección 1 - Filtros
         html.Div(
             id="section-1",
