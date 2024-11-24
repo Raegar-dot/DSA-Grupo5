@@ -19,14 +19,6 @@ server = app.server
 app.config.suppress_callback_exceptions = True
 
 
-# Load data from csv
-def load_data():
-    data = pd.read_csv("datos_energia.csv", sep=',')
-    data['time'] = pd.to_datetime(data['time'])
-    data.set_index('time', inplace=True)
-
-    return data
-
 # Load data from gold folder
 def load_data_analisis_descriptivo():
     data = pd.read_csv("../data/gold/ExporteCOL2022_2023_2024_top_products.csv", sep=',')
@@ -125,24 +117,6 @@ def plot_pie_chart(data_ad):
     return fig
 
 
-
-def description_card():
-    """
-    :return: A Div containing dashboard title & descriptions.
-    """
-    return html.Div(
-        id="description-card",
-        children=[
-            #html.H5("Proyecto 1"),
-            html.H3("Pronóstico de producción energética"),
-            html.Div(
-                id="intro",
-                children="Esta herramienta contiene información sobre la demanda energética total en Austria cada hora según lo públicado en ENTSO-E Data Portal. Adicionalmente, permite realizar pronósticos hasta 5 dias en el futuro."
-            ),
-        ],
-    )
-
-
 def generate_control_card():
     """
     :return: A Div containing controls for graphs.
@@ -153,7 +127,7 @@ def generate_control_card():
             # Canal
             html.P("Seleccionar un Canal Comercial:"),
             html.Div(
-                id="componentes-fecha-inicial",
+                id="componentes-prediccion",
                 children=[
                     
                     html.Div(
@@ -190,7 +164,7 @@ def generate_filters():
                         "color": "#FFFFFF",  # Puedes cambiar el color si lo deseas
                     }),
             html.Div(
-                id="componentes-fecha-inicial",
+                id="componentes-filtros",
                 children=[
                     
                     html.Div(
@@ -231,7 +205,7 @@ def generate_filters():
                                 id="uen-dropdown",
                                 options=[{'label': uen, 'value': uen} for uen in data_ad['Uen'].unique()],
                                 placeholder="Seleccione una Unidad de Negocio",
-                                value=data_ad['Uen'].unique()[0],
+                                value=[data_ad['Uen'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -240,14 +214,14 @@ def generate_filters():
                     ),
 
                     html.Div(
-                        id="componente-canal",
+                        id="componente-canal2",
                         children=[
                             html.P("Canal"),
                             dcc.Dropdown(
-                                id="canal-dropdown",
+                                id="canal2-dropdown",
                                 options=[{'label': canal, 'value': canal} for canal in data_ad['Canal Comercial'].unique()],
                                 placeholder="Seleccione un canal",
-                                value=data_ad['Canal Comercial'].unique()[0],
+                                value=[data_ad['Canal Comercial'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -263,7 +237,7 @@ def generate_filters():
                                 id="regional-dropdown",
                                 options=[{'label': regional, 'value': regional} for regional in data_ad['Regional'].unique()],
                                 placeholder="Seleccione una Regional",
-                                value=data_ad['Regional'].unique()[0],
+                                value=[data_ad['Regional'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -278,7 +252,7 @@ def generate_filters():
                                 id="marquilla-dropdown",
                                 options=[{'label': marquilla, 'value': marquilla} for marquilla in data_ad['Marquilla'].unique()],
                                 placeholder="Seleccione una Marquilla",
-                                value=data_ad['Marquilla'].unique()[0],
+                                value=[data_ad['Marquilla'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -293,7 +267,7 @@ def generate_filters():
                                 id="producto-dropdown",
                                 options=[{'label': producto, 'value': producto} for producto in data_ad['Producto'].unique()],
                                 placeholder="Seleccione un Producto",
-                                value=data_ad['Producto'].unique()[0],
+                                value=[data_ad['Producto'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -426,11 +400,13 @@ def generate_KPI(data_ad):
         ]
     )
 
-def plot_time_series_1(data_ad):
+def plot_time_series_1(data_ad, uen, canal2, regional, marquilla, producto):
     data_ad['Año'] = data_ad["Año"].astype(int)
     data_ad['Mes'] = data_ad["Mes"].astype(int)
     data_ad['Dia'] = 1
     data_ad['Fecha'] = pd.to_datetime(data_ad['Año'].astype(str) + '-' + data_ad['Mes'].astype(str) + '-' + data_ad['Dia'].astype(str))
+    data_ad = data_ad[(data_ad['Uen'].isin(uen)) & (data_ad['Canal Comercial'].isin(canal2)) & (data_ad['Regional'].isin(regional)) & 
+                      (data_ad['Marquilla'].isin(marquilla)) & (data_ad['Producto'].isin(producto))]
     serie_ventas = data_ad.groupby('Fecha')['Ventas'].sum().reset_index()
 
     fig = go.Figure(
@@ -461,11 +437,13 @@ def plot_time_series_1(data_ad):
     return fig
 
 
-def plot_time_series_2(data_ad):
+def plot_time_series_2(data_ad, uen, canal2, regional, marquilla, producto):
     data_ad['Año'] = data_ad["Año"].astype(int)
     data_ad['Mes'] = data_ad["Mes"].astype(int)
     data_ad['Dia'] = 1
     data_ad['Fecha'] = pd.to_datetime(data_ad['Año'].astype(str) + '-' + data_ad['Mes'].astype(str) + '-' + data_ad['Dia'].astype(str))
+    data_ad = data_ad[(data_ad['Uen'].isin(uen)) & (data_ad['Canal Comercial'].isin(canal2)) & (data_ad['Regional'].isin(regional)) & 
+                      (data_ad['Marquilla'].isin(marquilla)) & (data_ad['Producto'].isin(producto))]
     serie_margen = data_ad.groupby('Fecha')['Margen'].mean().reset_index()
 
     fig = go.Figure(
@@ -499,7 +477,7 @@ app.layout = html.Div(
     id="app-container",
 
     children=[
-        dcc.Interval(id="interval", interval=1000, n_intervals=0),
+        #dcc.Interval(id="interval", interval=1000, n_intervals=0),
 
         html.Div(
             id="brand-section",
@@ -581,7 +559,7 @@ app.layout = html.Div(
                                             className="six columns",
                                             children =[dcc.Graph(
                                                 id = 'plot_time_series_1',
-                                                figure = plot_time_series_1(data_ad)
+                                                #figure = plot_time_series_1(data_ad)
                                             )
                                             ]
                                         ),
@@ -590,7 +568,7 @@ app.layout = html.Div(
                                             className="six columns",
                                             children =[dcc.Graph(
                                                 id = 'plot_time_series_2',
-                                                figure = plot_time_series_2(data_ad)
+                                                #figure = plot_time_series_2(data_ad)
                                             )
                                             ]
                                         )
@@ -701,7 +679,7 @@ app.layout = html.Div(
                             children=[generate_control_card()]
                             + [
                                 html.Div(
-                                    ["initial child"], id="output-clientside", style={"display": "none"}
+                                    ["initial child"], id="output-clientside2", style={"display": "none"}
                                 )
                             ],
                         ),
@@ -727,24 +705,29 @@ app.layout = html.Div(
     [Output(component_id="plot_series_1", component_property="figure"),
      Output(component_id="plot_series_2", component_property="figure"),
      Output(component_id="plot_series_3", component_property="figure"),
-     Output(component_id="plot_series_5", component_property="figure")],
-    [Input("interval", "n_intervals"),
+     Output(component_id="plot_series_5", component_property="figure"),
+     Output(component_id="plot_time_series_1", component_property="figure"),
+     Output(component_id="plot_time_series_2", component_property="figure")],
+    [#Input("interval", "n_intervals"),
      Input(component_id="canal-dropdown", component_property="value"),
-    #  Input(component_id="anio-dropdown", component_property="value"),
-    #  Input(component_id="mes-dropdown", component_property="value"),
-    #  Input(component_id="marquilla-dropdown", component_property="value"),
-    #  Input(component_id="regional-dropdown", component_property="value"),
-    #  Input(component_id="uen-dropdown", component_property="value"),
-    #  Input(component_id="producto-dropdown", component_property="value")>
+     Input(component_id="anio-dropdown", component_property="value"),
+     Input(component_id="mes-dropdown", component_property="value"),
+     Input(component_id="uen-dropdown", component_property="value"),
+     Input(component_id="canal2-dropdown", component_property="value"),
+     Input(component_id="regional-dropdown", component_property="value"),
+     Input(component_id="marquilla-dropdown", component_property="value"),
+     Input(component_id="producto-dropdown", component_property="value")
      ]
 )
-def update_output_div(n_intervals, canal):
+def update_output_div(canal, anio, mes, uen, canal2, regional, marquilla, producto):
 
     fig1 = plot_bar_1(data_ad)   
     fig2 = plot_bar_2(data_ad)  
     fig3 = plot_pie_chart(data_ad)
+    fig5 = plot_time_series_1(data_ad, uen, canal2, regional, marquilla, producto)
+    fig6 = plot_time_series_2(data_ad, uen, canal2, regional, marquilla, producto)
 
-    return fig1, fig2, fig3, go.Figure()
+    return fig1, fig2, fig3, go.Figure(), fig5, fig6
 
 
 # Run the server
