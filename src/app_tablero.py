@@ -286,6 +286,7 @@ def generate_KPI(data_ad):
     Función para generar 4 KPIs, cada uno en su propia tarjeta.
     :return: Una lista de Divs que representan los 4 KPIs.
     """
+
     if data_ad["Ventas"].sum() >= 1e6:
         kpi_total_ventas = (data_ad["Ventas"].sum()) #/1e6
     else: 
@@ -548,6 +549,7 @@ app.layout = html.Div(
                             #style={"display": "flex"},
                             children=[
                                 html.Div(
+                                    id="kpi-container",
                                     children = generate_KPI(data_ad)
                                 ),                            
                                 html.Hr(),
@@ -707,7 +709,8 @@ app.layout = html.Div(
      Output(component_id="plot_series_3", component_property="figure"),
      Output(component_id="plot_series_5", component_property="figure"),
      Output(component_id="plot_time_series_1", component_property="figure"),
-     Output(component_id="plot_time_series_2", component_property="figure")],
+     Output(component_id="plot_time_series_2", component_property="figure"),
+     Output("kpi-container", "children")],
     [#Input("interval", "n_intervals"),
      Input(component_id="canal-dropdown", component_property="value"),
      Input(component_id="anio-dropdown", component_property="value"),
@@ -727,7 +730,10 @@ def update_output_div(canal, anio, mes, uen, canal2, regional, marquilla, produc
     fig5 = plot_time_series_1(data_ad, uen, canal2, regional, marquilla, producto)
     fig6 = plot_time_series_2(data_ad, uen, canal2, regional, marquilla, producto)
 
-    return fig1, fig2, fig3, go.Figure(), fig5, fig6
+    filtered_data = data_ad[(data_ad['Uen'].isin(uen)) & (data_ad['Canal Comercial'].isin(canal2)) & (data_ad['Regional'].isin(regional)) & 
+                      (data_ad['Marquilla'].isin(marquilla)) & (data_ad['Producto'].isin(producto))]
+
+    return fig1, fig2, fig3, go.Figure(), fig5, fig6, generate_KPI(filtered_data)
 
 
 # Run the server
