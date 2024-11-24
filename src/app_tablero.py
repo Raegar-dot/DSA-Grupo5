@@ -19,14 +19,6 @@ server = app.server
 app.config.suppress_callback_exceptions = True
 
 
-# Load data from csv
-def load_data():
-    data = pd.read_csv("datos_energia.csv", sep=',')
-    data['time'] = pd.to_datetime(data['time'])
-    data.set_index('time', inplace=True)
-
-    return data
-
 # Load data from gold folder
 def load_data_analisis_descriptivo():
     data = pd.read_csv("../data/gold/ExporteCOL2022_2023_2024_top_products.csv", sep=',')
@@ -125,24 +117,6 @@ def plot_pie_chart(data_ad):
     return fig
 
 
-
-def description_card():
-    """
-    :return: A Div containing dashboard title & descriptions.
-    """
-    return html.Div(
-        id="description-card",
-        children=[
-            #html.H5("Proyecto 1"),
-            html.H3("Pronóstico de producción energética"),
-            html.Div(
-                id="intro",
-                children="Esta herramienta contiene información sobre la demanda energética total en Austria cada hora según lo públicado en ENTSO-E Data Portal. Adicionalmente, permite realizar pronósticos hasta 5 dias en el futuro."
-            ),
-        ],
-    )
-
-
 def generate_control_card():
     """
     :return: A Div containing controls for graphs.
@@ -153,7 +127,7 @@ def generate_control_card():
             # Canal
             html.P("Seleccionar un Canal Comercial:"),
             html.Div(
-                id="componentes-fecha-inicial",
+                id="componentes-prediccion",
                 children=[
                     
                     html.Div(
@@ -190,7 +164,7 @@ def generate_filters():
                         "color": "#FFFFFF",  # Puedes cambiar el color si lo deseas
                     }),
             html.Div(
-                id="componentes-fecha-inicial",
+                id="componentes-filtros",
                 children=[
                     
                     html.Div(
@@ -231,7 +205,7 @@ def generate_filters():
                                 id="uen-dropdown",
                                 options=[{'label': uen, 'value': uen} for uen in data_ad['Uen'].unique()],
                                 placeholder="Seleccione una Unidad de Negocio",
-                                value=data_ad['Uen'].unique()[0],
+                                value=[data_ad['Uen'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -240,14 +214,14 @@ def generate_filters():
                     ),
 
                     html.Div(
-                        id="componente-canal",
+                        id="componente-canal2",
                         children=[
                             html.P("Canal"),
                             dcc.Dropdown(
-                                id="canal-dropdown",
+                                id="canal2-dropdown",
                                 options=[{'label': canal, 'value': canal} for canal in data_ad['Canal Comercial'].unique()],
                                 placeholder="Seleccione un canal",
-                                value=data_ad['Canal Comercial'].unique()[0],
+                                value=[data_ad['Canal Comercial'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -263,7 +237,7 @@ def generate_filters():
                                 id="regional-dropdown",
                                 options=[{'label': regional, 'value': regional} for regional in data_ad['Regional'].unique()],
                                 placeholder="Seleccione una Regional",
-                                value=data_ad['Regional'].unique()[0],
+                                value=[data_ad['Regional'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -278,7 +252,7 @@ def generate_filters():
                                 id="marquilla-dropdown",
                                 options=[{'label': marquilla, 'value': marquilla} for marquilla in data_ad['Marquilla'].unique()],
                                 placeholder="Seleccione una Marquilla",
-                                value=data_ad['Marquilla'].unique()[0],
+                                value=[data_ad['Marquilla'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -293,7 +267,7 @@ def generate_filters():
                                 id="producto-dropdown",
                                 options=[{'label': producto, 'value': producto} for producto in data_ad['Producto'].unique()],
                                 placeholder="Seleccione un Producto",
-                                value=data_ad['Producto'].unique()[0],
+                                value=[data_ad['Producto'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -307,11 +281,35 @@ def generate_filters():
     )
 
 
-def generate_KPI():
+def generate_KPI(data_ad):
     """
     Función para generar 4 KPIs, cada uno en su propia tarjeta.
     :return: Una lista de Divs que representan los 4 KPIs.
     """
+    if data_ad["Ventas"].sum() >= 1e6:
+        kpi_total_ventas = (data_ad["Ventas"].sum()) #/1e6
+    else: 
+        kpi_total_ventas = (data_ad["Ventas"].sum())
+
+
+    if data_ad["Ventas Galones"].sum() >= 1e6:
+        kpi_total_ventas_gl = (data_ad["Ventas Galones"].sum())  #/1e6
+    else: 
+        kpi_total_ventas_gl = (data_ad["Ventas Galones"].sum())
+
+
+    if data_ad["Utilidad Bruta"].sum() >= 1e6:
+        kpi_utilidad_bruta = (data_ad["Utilidad Bruta"].sum())  #/1e6
+    else: 
+        kpi_utilidad_bruta = (data_ad["Utilidad Bruta"].sum())
+
+    
+    if data_ad["Utilidad Bruta"].sum() / data_ad["Ventas"].sum() >= 1e6:
+        kpi_margen = (data_ad["Utilidad Bruta"].sum() / data_ad["Ventas"].sum())*100  #/1e6
+    else: 
+        kpi_margen = (data_ad["Utilidad Bruta"].sum() / data_ad["Ventas"].sum())*100
+
+
     return html.Div(
         className="row",  # Utilizamos un 'row' para alinear los KPIs horizontalmente
         children=[
@@ -324,8 +322,8 @@ def generate_KPI():
                         className="kpi-card",  # Clase para estilizar cada tarjeta de KPI
                         children=[
                             html.H4("Total Ventas COP", style={"textAlign": "center", "color": "#FFFFFF"}),
-                            html.P("1",  # Un valor aleatorio para ejemplo
-                                   style={"textAlign": "center", "fontSize": "30px", "color": "#FFFFFF"}),
+                            html.P(f"{kpi_total_ventas:,.0f}",  # Un valor aleatorio para ejemplo
+                                   style={"textAlign": "center", "fontSize": "25px", "color": "#FFFFFF"}),
                         ],
                         style={
                             "padding": "20px",
@@ -345,8 +343,8 @@ def generate_KPI():
                         className="kpi-card",
                         children=[
                             html.H4("Total Ventas gl", style={"textAlign": "center", "color": "#FFFFFF"}),
-                            html.P("2",  # Un valor aleatorio
-                                   style={"textAlign": "center", "fontSize": "30px", "color": "#FFFFFF"}),
+                            html.P(f"{kpi_total_ventas_gl:,.0f}",  # Un valor aleatorio
+                                   style={"textAlign": "center", "fontSize": "25px", "color": "#FFFFFF"}),
                         ],
                         style={
                             "padding": "20px",
@@ -366,8 +364,8 @@ def generate_KPI():
                         className="kpi-card",
                         children=[
                             html.H4("Utilidad Bruta COP", style={"textAlign": "center", "color": "#FFFFFF"}),
-                            html.P("3",  # Un valor aleatorio
-                                   style={"textAlign": "center", "fontSize": "30px", "color": "#FFFFFF"}),
+                            html.P(f"{kpi_utilidad_bruta:,.0f}",  # Un valor aleatorio
+                                   style={"textAlign": "center", "fontSize": "25px", "color": "#FFFFFF"}),
                         ],
                         style={
                             "padding": "20px",
@@ -387,8 +385,8 @@ def generate_KPI():
                         className="kpi-card",
                         children=[
                             html.H4("Margen", style={"textAlign": "center", "color": "#FFFFFF"}),
-                            html.P("4",  # Un valor aleatorio
-                                   style={"textAlign": "center", "fontSize": "30px", "color": "#FFFFFF"}),
+                            html.P(f"{kpi_margen:,.1f}%",  # Un valor aleatorio
+                                   style={"textAlign": "center", "fontSize": "25px", "color": "#FFFFFF"}),
                         ],
                         style={
                             "padding": "10px",
@@ -402,70 +400,113 @@ def generate_KPI():
         ]
     )
 
-# def plot_time_series_1(data_ad):
+def plot_time_series_1(data_ad, uen, canal2, regional, marquilla, producto):
+    data_ad['Año'] = data_ad["Año"].astype(int)
+    data_ad['Mes'] = data_ad["Mes"].astype(int)
+    data_ad['Dia'] = 1
+    data_ad['Fecha'] = pd.to_datetime(data_ad['Año'].astype(str) + '-' + data_ad['Mes'].astype(str) + '-' + data_ad['Dia'].astype(str))
+    data_ad = data_ad[(data_ad['Uen'].isin(uen)) & (data_ad['Canal Comercial'].isin(canal2)) & (data_ad['Regional'].isin(regional)) & 
+                      (data_ad['Marquilla'].isin(marquilla)) & (data_ad['Producto'].isin(producto))]
+    serie_ventas = data_ad.groupby('Fecha')['Ventas'].sum().reset_index()
 
-#     serie_ventas = data_ad.groupby("Marquilla")["Ventas"].sum().reset_index()
-#     ventas_por_marquilla = ventas_por_marquilla.sort_values(by="Ventas", ascending=False)
-#     ventas_por_marquilla = ventas_por_marquilla.head(10)
+    fig = go.Figure(
+        data=[
+            go.Scatter(
+                x=serie_ventas['Fecha'],
+                y=serie_ventas['Ventas'],
+                mode = 'lines+markers',
+                line=dict(color="#3498db"),
+                name="Ventas por Fecha"
+            )
+        ]
+    )
 
-#     fig = go.Figure(
-#         data=[
-#             go.Bar(
-#                 x=ventas_por_marquilla["Marquilla"],
-#                 y=ventas_por_marquilla["Ventas"],
-#                 marker=dict(color="#3498db"),
-#                 name="Ventas por Marquilla"
-#             )
-#         ]
-#     )
+    # Configuración del diseño del gráfico
+    fig.update_layout(
+        title="Histórico de Ventas COP",
+        xaxis_title="Fecha",
+        yaxis_title="Ventas COP",
+        paper_bgcolor="rgba(0,0,0,0)",  # Fondo transparente (usa color hexadecimal si prefieres)
+        plot_bgcolor="#E8E8E8",  # Fondo del área de la gráfica
+        font=dict(color="#FFFFFF"),  # Color de texto de los ejes y título
+        xaxis = dict(   tickformat="%Y-%m",  # Formato de fecha para mostrar año y mes
+                        tickangle=45
+                        )  # Ángulo para evitar solapamiento de fechas)
+    )
 
-#     # Configuración del diseño del gráfico
-#     fig.update_layout(
-#         title="Total de Ventas por Marquilla",
-#         xaxis_title="Marquilla",
-#         yaxis_title="Ventas",
-#         paper_bgcolor="rgba(0,0,0,0)",  # Fondo transparente (usa color hexadecimal si prefieres)
-#         plot_bgcolor="#E8E8E8",  # Fondo del área de la gráfica
-#         font=dict(color="#FFFFFF")  # Color de texto de los ejes y título
-#     )
+    return fig
 
-#     return fig
 
-# def plot_time_series_2(data_ad):
+def plot_time_series_2(data_ad, uen, canal2, regional, marquilla, producto):
+    data_ad['Año'] = data_ad["Año"].astype(int)
+    data_ad['Mes'] = data_ad["Mes"].astype(int)
+    data_ad['Dia'] = 1
+    data_ad['Fecha'] = pd.to_datetime(data_ad['Año'].astype(str) + '-' + data_ad['Mes'].astype(str) + '-' + data_ad['Dia'].astype(str))
+    data_ad = data_ad[(data_ad['Uen'].isin(uen)) & (data_ad['Canal Comercial'].isin(canal2)) & (data_ad['Regional'].isin(regional)) & 
+                      (data_ad['Marquilla'].isin(marquilla)) & (data_ad['Producto'].isin(producto))]
+    serie_margen = data_ad.groupby('Fecha')['Margen'].mean().reset_index()
 
-#     ventas_por_marquilla = data_ad.groupby("Marquilla")["Ventas"].sum().reset_index()
-#     ventas_por_marquilla = ventas_por_marquilla.sort_values(by="Ventas", ascending=False)
-#     ventas_por_marquilla = ventas_por_marquilla.head(10)
+    fig = go.Figure(
+        data=[
+            go.Scatter(
+                x=serie_margen['Fecha'],
+                y=serie_margen['Margen']*100,
+                mode = 'lines+markers',
+                line=dict(color="#3498db"),
+                name="Margen por Fecha"
+            )
+        ]
+    )
 
-#     fig = go.Figure(
-#         data=[
-#             go.Bar(
-#                 x=ventas_por_marquilla["Marquilla"],
-#                 y=ventas_por_marquilla["Ventas"],
-#                 marker=dict(color="#3498db"),
-#                 name="Ventas por Marquilla"
-#             )
-#         ]
-#     )
+    # Configuración del diseño del gráfico
+    fig.update_layout(
+        title="Histórico del Margen",
+        xaxis_title="Fecha",
+        yaxis_title="% Margen",
+        paper_bgcolor="rgba(0,0,0,0)",  # Fondo transparente (usa color hexadecimal si prefieres)
+        plot_bgcolor="#E8E8E8",  # Fondo del área de la gráfica
+        font=dict(color="#FFFFFF"),  # Color de texto de los ejes y título
+        xaxis = dict(   tickformat="%Y-%m",  # Formato de fecha para mostrar año y mes
+                        tickangle=45
+                        )  # Ángulo para evitar solapamiento de fechas)
+    )
 
-#     # Configuración del diseño del gráfico
-#     fig.update_layout(
-#         title="Total de Ventas por Marquilla",
-#         xaxis_title="Marquilla",
-#         yaxis_title="Ventas",
-#         paper_bgcolor="rgba(0,0,0,0)",  # Fondo transparente (usa color hexadecimal si prefieres)
-#         plot_bgcolor="#E8E8E8",  # Fondo del área de la gráfica
-#         font=dict(color="#FFFFFF")  # Color de texto de los ejes y título
-#     )
-
-#     return fig
-
+    return fig
 
 app.layout = html.Div(
     id="app-container",
 
     children=[
-        dcc.Interval(id="interval", interval=1000, n_intervals=0),
+        #dcc.Interval(id="interval", interval=1000, n_intervals=0),
+
+        html.Div(
+            id="brand-section",
+            style={
+                "display": "flex",
+                "justify-content": "space-between",  # Para alinear la imagen a la izquierda y el título a la derecha
+                "align-items": "center",
+                "padding": "5px 20px",  # Padding para dar espacio
+                "background-color": "#2c3e50",  # Color de fondo, puedes cambiarlo
+            },
+            children=[
+                # Imagen del Brand (logo)
+                html.Img(
+                    src="/assets/logo.png",  # Asegúrate de tener la imagen en la carpeta 'assets'
+                    style={"height": "150px", "width": "auto"}  # Ajusta el tamaño de la imagen
+                ),
+                
+                # Título del Brand
+                html.H1(
+                    "Tablero de Seguimiento de Ventas y Utilidades",  # Título que deseas mostrar
+                    style={
+                        "color": "#ecf0f1",  # Color de texto
+                        "font-size": "30px",  # Tamaño de la fuente
+                        "font-weight": "bold",  # Negrita
+                        "margin": "0",  # Eliminar márgenes
+                    }
+                ),
+            ],
+        ),
 
         # Sección 1 - Filtros
         html.Div(
@@ -503,10 +544,41 @@ app.layout = html.Div(
                         ),
                         # Second graph on the right
                         html.Div(
-                            className="six columns",    
-                            style={"display": "flex"},
+                            className="nine columns",    
+                            #style={"display": "flex"},
                             children=[
-                                generate_KPI()
+                                html.Div(
+                                    children = generate_KPI(data_ad)
+                                ),                            
+                                html.Hr(),
+
+                                html.Div(
+                                    className="twelve columns",
+                                    children=[
+                                        html.Div(
+                                            className="six columns",
+                                            children =[dcc.Graph(
+                                                id = 'plot_time_series_1',
+                                                #figure = plot_time_series_1(data_ad)
+                                            )
+                                            ]
+                                        ),
+
+                                        html.Div(
+                                            className="six columns",
+                                            children =[dcc.Graph(
+                                                id = 'plot_time_series_2',
+                                                #figure = plot_time_series_2(data_ad)
+                                            )
+                                            ]
+                                        )
+
+                                    ]
+
+                                )  
+
+
+
                             ],
                         ),
                     ],
@@ -607,7 +679,7 @@ app.layout = html.Div(
                             children=[generate_control_card()]
                             + [
                                 html.Div(
-                                    ["initial child"], id="output-clientside", style={"display": "none"}
+                                    ["initial child"], id="output-clientside2", style={"display": "none"}
                                 )
                             ],
                         ),
@@ -633,24 +705,29 @@ app.layout = html.Div(
     [Output(component_id="plot_series_1", component_property="figure"),
      Output(component_id="plot_series_2", component_property="figure"),
      Output(component_id="plot_series_3", component_property="figure"),
-     Output(component_id="plot_series_5", component_property="figure")],
-    [Input("interval", "n_intervals"),
+     Output(component_id="plot_series_5", component_property="figure"),
+     Output(component_id="plot_time_series_1", component_property="figure"),
+     Output(component_id="plot_time_series_2", component_property="figure")],
+    [#Input("interval", "n_intervals"),
      Input(component_id="canal-dropdown", component_property="value"),
-    #  Input(component_id="anio-dropdown", component_property="value"),
-    #  Input(component_id="mes-dropdown", component_property="value"),
-    #  Input(component_id="marquilla-dropdown", component_property="value"),
-    #  Input(component_id="regional-dropdown", component_property="value"),
-    #  Input(component_id="uen-dropdown", component_property="value"),
-    #  Input(component_id="producto-dropdown", component_property="value")>
+     Input(component_id="anio-dropdown", component_property="value"),
+     Input(component_id="mes-dropdown", component_property="value"),
+     Input(component_id="uen-dropdown", component_property="value"),
+     Input(component_id="canal2-dropdown", component_property="value"),
+     Input(component_id="regional-dropdown", component_property="value"),
+     Input(component_id="marquilla-dropdown", component_property="value"),
+     Input(component_id="producto-dropdown", component_property="value")
      ]
 )
-def update_output_div(n_intervals, canal):
+def update_output_div(canal, anio, mes, uen, canal2, regional, marquilla, producto):
 
     fig1 = plot_bar_1(data_ad)   
     fig2 = plot_bar_2(data_ad)  
     fig3 = plot_pie_chart(data_ad)
+    fig5 = plot_time_series_1(data_ad, uen, canal2, regional, marquilla, producto)
+    fig6 = plot_time_series_2(data_ad, uen, canal2, regional, marquilla, producto)
 
-    return fig1, fig2, fig3, go.Figure()
+    return fig1, fig2, fig3, go.Figure(), fig5, fig6
 
 
 # Run the server
