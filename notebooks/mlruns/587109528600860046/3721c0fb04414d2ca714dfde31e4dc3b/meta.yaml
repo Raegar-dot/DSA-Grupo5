@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/camil/Downloads/SegundaEntregaDSA/DSA-Grupo5/notebooks/mlruns/587109528600860046/3721c0fb04414d2ca714dfde31e4dc3b/artifacts
+end_time: 1731366193764
+entry_point_name: ''
+experiment_id: '587109528600860046'
+lifecycle_stage: active
+run_id: 3721c0fb04414d2ca714dfde31e4dc3b
+run_name: thoughtful-lynx-313
+run_uuid: 3721c0fb04414d2ca714dfde31e4dc3b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1731366193478
+status: 4
+tags: []
+user_id: camilamsc17

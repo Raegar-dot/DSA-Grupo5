@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/camil/Downloads/SegundaEntregaDSA/DSA-Grupo5/notebooks/mlruns/587109528600860046/3dff05198d5247cfb0c111835e6a1916/artifacts
+end_time: 1731364209525
+entry_point_name: ''
+experiment_id: '587109528600860046'
+lifecycle_stage: active
+run_id: 3dff05198d5247cfb0c111835e6a1916
+run_name: funny-doe-291
+run_uuid: 3dff05198d5247cfb0c111835e6a1916
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1731364208982
+status: 4
+tags: []
+user_id: camilamsc17
