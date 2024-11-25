@@ -1,0 +1,66 @@
+2024-11-24T23:58:14.925705-0500 - INFO - Predicción realizada para Año: 2023, Mes: 10 | Resultado: 6211300.5
+2024-11-24T23:58:14.932731-0500 - INFO - Predicción realizada para Año: 2023, Mes: 10 | Resultado: 6211300.5
+2024-11-24T23:58:14.938734-0500 - INFO - Predicción realizada para Año: 2023, Mes: 11 | Resultado: 6386703.5
+2024-11-24T23:58:14.946258-0500 - INFO - Predicción realizada para Año: 2023, Mes: 12 | Resultado: 4808326.5
+2024-11-24T23:58:14.953268-0500 - INFO - Predicción realizada para Año: 2024, Mes: 1 | Resultado: 6568553.5
+2024-11-24T23:58:14.960773-0500 - INFO - Predicción realizada para Año: 2024, Mes: 2 | Resultado: 6568553.5
+2024-11-24T23:58:14.967279-0500 - INFO - Predicción realizada para Año: 2024, Mes: 3 | Resultado: 6568553.5
+2024-11-24T23:58:14.975291-0500 - INFO - Predicción realizada para Año: 2024, Mes: 4 | Resultado: 6568553.5
+2024-11-24T23:58:14.982305-0500 - INFO - Predicción realizada para Año: 2024, Mes: 5 | Resultado: 6568553.5
+2024-11-24T23:58:14.989307-0500 - INFO - Predicción realizada para Año: 2024, Mes: 6 | Resultado: 6568553.5
+2024-11-24T23:58:14.997317-0500 - INFO - Predicción realizada para Año: 2024, Mes: 7 | Resultado: 7409361.5
+2024-11-24T23:58:15.003324-0500 - INFO - Predicción realizada para Año: 2024, Mes: 8 | Resultado: 7600919.5
+2024-11-24T23:58:15.004325-0500 - INFO - Resultado de la predicción: [{'Año': 2023, 'Mes': 10, 'Ventas': np.float32(6211300.5)}, {'Año': 2023, 'Mes': 10, 'Ventas': np.float32(6211300.5)}, {'Año': 2023, 'Mes': 11, 'Ventas': np.float32(6386703.5)}, {'Año': 2023, 'Mes': 12, 'Ventas': np.float32(4808326.5)}, {'Año': 2024, 'Mes': 1, 'Ventas': np.float32(6568553.5)}, {'Año': 2024, 'Mes': 2, 'Ventas': np.float32(6568553.5)}, {'Año': 2024, 'Mes': 3, 'Ventas': np.float32(6568553.5)}, {'Año': 2024, 'Mes': 4, 'Ventas': np.float32(6568553.5)}, {'Año': 2024, 'Mes': 5, 'Ventas': np.float32(6568553.5)}, {'Año': 2024, 'Mes': 6, 'Ventas': np.float32(6568553.5)}, {'Año': 2024, 'Mes': 7, 'Ventas': np.float32(7409361.5)}, {'Año': 2024, 'Mes': 8, 'Ventas': np.float32(7600919.5)}]
+2024-11-25T00:14:56.627430-0500 - INFO - Predicción realizada para Año: 2023, Mes: 10 | Resultado: 6211300.5
+2024-11-25T00:14:56.634437-0500 - INFO - Predicción realizada para Año: 2023, Mes: 10 | Resultado: 6211300.5
+2024-11-25T00:14:56.641963-0500 - INFO - Predicción realizada para Año: 2023, Mes: 11 | Resultado: 6386703.5
+2024-11-25T00:14:56.651480-0500 - INFO - Predicción realizada para Año: 2023, Mes: 12 | Resultado: 4808326.5
+2024-11-25T00:14:56.657993-0500 - INFO - Predicción realizada para Año: 2024, Mes: 1 | Resultado: 6568553.5
+2024-11-25T00:14:56.665007-0500 - INFO - Predicción realizada para Año: 2024, Mes: 2 | Resultado: 6568553.5
+2024-11-25T00:14:56.673021-0500 - INFO - Predicción realizada para Año: 2024, Mes: 3 | Resultado: 6568553.5
+2024-11-25T00:14:56.679023-0500 - INFO - Predicción realizada para Año: 2024, Mes: 4 | Resultado: 6568553.5
+2024-11-25T00:14:56.687051-0500 - INFO - Predicción realizada para Año: 2024, Mes: 5 | Resultado: 6568553.5
+2024-11-25T00:14:56.693062-0500 - INFO - Predicción realizada para Año: 2024, Mes: 6 | Resultado: 6568553.5
+2024-11-25T00:14:56.706093-0500 - INFO - Predicción realizada para Año: 2024, Mes: 7 | Resultado: 7409361.5
+2024-11-25T00:14:56.714106-0500 - INFO - Predicción realizada para Año: 2024, Mes: 8 | Resultado: 7600919.5
+2024-11-25T00:14:56.714106-0500 - INFO - Resultado de la predicción: [{'Año': 2023, 'Mes': 10, 'Ventas': 6211300.5}, {'Año': 2023, 'Mes': 10, 'Ventas': 6211300.5}, {'Año': 2023, 'Mes': 11, 'Ventas': 6386703.5}, {'Año': 2023, 'Mes': 12, 'Ventas': 4808326.5}, {'Año': 2024, 'Mes': 1, 'Ventas': 6568553.5}, {'Año': 2024, 'Mes': 2, 'Ventas': 6568553.5}, {'Año': 2024, 'Mes': 3, 'Ventas': 6568553.5}, {'Año': 2024, 'Mes': 4, 'Ventas': 6568553.5}, {'Año': 2024, 'Mes': 5, 'Ventas': 6568553.5}, {'Año': 2024, 'Mes': 6, 'Ventas': 6568553.5}, {'Año': 2024, 'Mes': 7, 'Ventas': 7409361.5}, {'Año': 2024, 'Mes': 8, 'Ventas': 7600919.5}]
+2024-11-25T00:59:31.078086-0500 - INFO - None
+2024-11-25T00:59:31.079920-0500 - INFO - None
+2024-11-25T01:08:25.244452-0500 - ERROR - No se encontraron datos para la combinación proporcionada
+2024-11-25T01:10:57.463122-0500 - ERROR - No se encontraron datos para la combinación proporcionada
+2024-11-25T01:11:50.043866-0500 - ERROR - No se encontraron datos para la combinación proporcionada
+2024-11-25T01:11:50.044906-0500 - INFO - None
+2024-11-25T01:13:43.848547-0500 - ERROR - No se encontraron datos para la combinación proporcionada
+2024-11-25T01:13:43.849548-0500 - ERROR - DECORATVO REGIONAL BOGOTA Distribución AEROCOLOR 10283188 LACA NEGRO MATE AEROCOLOR AEROSOLES 300 ML
+2024-11-25T01:18:39.763951-0500 - ERROR - No se encontraron datos para la combinación proporcionada
+2024-11-25T01:18:39.763951-0500 - ERROR - DECORATIVO REGIONAL BOGOTA Distribución AEROCOLOR 10283188 LACA NEGRO MATE AEROCOLOR AEROSOLES 300 ML
+2024-11-25T01:22:21.844703-0500 - INFO - None
+2024-11-25T01:22:21.846206-0500 - INFO - None
+2024-11-25T01:22:21.854021-0500 - INFO - Predicción realizada para Año: 2023, Mes: 12 | Resultado: 4610424.5
+2024-11-25T01:22:21.861022-0500 - INFO - Predicción realizada para Año: 2023, Mes: 12 | Resultado: 4610424.5
+2024-11-25T01:22:21.868037-0500 - INFO - Predicción realizada para Año: 2024, Mes: 1 | Resultado: 6616746.5
+2024-11-25T01:22:21.874049-0500 - INFO - Predicción realizada para Año: 2024, Mes: 2 | Resultado: 6616746.5
+2024-11-25T01:22:21.881555-0500 - INFO - Predicción realizada para Año: 2024, Mes: 3 | Resultado: 6616746.5
+2024-11-25T01:22:21.888068-0500 - INFO - Predicción realizada para Año: 2024, Mes: 4 | Resultado: 6616746.5
+2024-11-25T01:22:21.895085-0500 - INFO - Predicción realizada para Año: 2024, Mes: 5 | Resultado: 6616746.5
+2024-11-25T01:22:21.901086-0500 - INFO - Predicción realizada para Año: 2024, Mes: 6 | Resultado: 6616746.5
+2024-11-25T01:22:21.908141-0500 - INFO - Predicción realizada para Año: 2024, Mes: 7 | Resultado: 7293650.5
+2024-11-25T01:22:21.914155-0500 - INFO - Predicción realizada para Año: 2024, Mes: 8 | Resultado: 7403019.5
+2024-11-25T01:22:21.921157-0500 - INFO - Predicción realizada para Año: 2024, Mes: 9 | Resultado: 7455478.5
+2024-11-25T01:22:21.927177-0500 - INFO - Predicción realizada para Año: 2024, Mes: 10 | Resultado: 6013398.5
+2024-11-25T01:22:21.927177-0500 - INFO - Resultado de la predicción: [{'Año': 2023, 'Mes': 12, 'Ventas': 4610424.5}, {'Año': 2023, 'Mes': 12, 'Ventas': 4610424.5}, {'Año': 2024, 'Mes': 1, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 2, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 3, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 4, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 5, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 6, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 7, 'Ventas': 7293650.5}, {'Año': 2024, 'Mes': 8, 'Ventas': 7403019.5}, {'Año': 2024, 'Mes': 9, 'Ventas': 7455478.5}, {'Año': 2024, 'Mes': 10, 'Ventas': 6013398.5}]
+2024-11-25T01:23:21.944899-0500 - INFO - None
+2024-11-25T01:23:21.945910-0500 - INFO - None
+2024-11-25T01:23:21.951014-0500 - INFO - Predicción realizada para Año: 2023, Mes: 12 | Resultado: 4610424.5
+2024-11-25T01:23:21.956519-0500 - INFO - Predicción realizada para Año: 2023, Mes: 12 | Resultado: 4610424.5
+2024-11-25T01:23:21.962680-0500 - INFO - Predicción realizada para Año: 2024, Mes: 1 | Resultado: 6616746.5
+2024-11-25T01:23:21.969525-0500 - INFO - Predicción realizada para Año: 2024, Mes: 2 | Resultado: 6616746.5
+2024-11-25T01:23:21.975530-0500 - INFO - Predicción realizada para Año: 2024, Mes: 3 | Resultado: 6616746.5
+2024-11-25T01:23:21.982836-0500 - INFO - Predicción realizada para Año: 2024, Mes: 4 | Resultado: 6616746.5
+2024-11-25T01:23:21.988537-0500 - INFO - Predicción realizada para Año: 2024, Mes: 5 | Resultado: 6616746.5
+2024-11-25T01:23:21.994543-0500 - INFO - Predicción realizada para Año: 2024, Mes: 6 | Resultado: 6616746.5
+2024-11-25T01:23:22.001046-0500 - INFO - Predicción realizada para Año: 2024, Mes: 7 | Resultado: 7293650.5
+2024-11-25T01:23:22.006550-0500 - INFO - Predicción realizada para Año: 2024, Mes: 8 | Resultado: 7403019.5
+2024-11-25T01:23:22.013555-0500 - INFO - Predicción realizada para Año: 2024, Mes: 9 | Resultado: 7455478.5
+2024-11-25T01:23:22.020058-0500 - INFO - Predicción realizada para Año: 2024, Mes: 10 | Resultado: 6013398.5
+2024-11-25T01:23:22.021058-0500 - INFO - Resultado de la predicción: [{'Año': 2023, 'Mes': 12, 'Ventas': 4610424.5}, {'Año': 2023, 'Mes': 12, 'Ventas': 4610424.5}, {'Año': 2024, 'Mes': 1, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 2, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 3, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 4, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 5, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 6, 'Ventas': 6616746.5}, {'Año': 2024, 'Mes': 7, 'Ventas': 7293650.5}, {'Año': 2024, 'Mes': 8, 'Ventas': 7403019.5}, {'Año': 2024, 'Mes': 9, 'Ventas': 7455478.5}, {'Año': 2024, 'Mes': 10, 'Ventas': 6013398.5}]
