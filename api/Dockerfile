@@ -4,17 +4,19 @@ FROM python:3.10
 RUN adduser --disabled-password --gecos '' api-user
 
 # Definir directorio de trabajo 
-WORKDIR /opt/modelapi
+WORKDIR /opt/api/modelapi
 
 # Instalar dependencias
-ADD ./modelapi /opt/modelapi/
+ADD ./modelapi /opt/api/modelapi
+
 RUN pip install --upgrade pip
-RUN pip install -r /opt/modelapi/api_requirements.txt
+RUN pip install -r /opt/api/modelapi/api_requirements.txt
 
 # Hacer el directorio de trabajo ejecutable 
-RUN chmod +x /opt/modelapi/run.sh
+RUN chmod +x /opt/api/modelapi/run.sh
+
 # Cambiar propiedad de la carpeta a api-user 
-RUN chown -R api-user:api-user ./
+RUN chown -R api-user:api-user /opt/api
 
 USER api-user
 # Puerto a exponer para la api 
