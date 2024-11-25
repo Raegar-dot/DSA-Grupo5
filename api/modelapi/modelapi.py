@@ -51,7 +51,7 @@ app = FastAPI(
 
 
 #Cargar el CSV con las mínimas fechas para las predicciones por cada combinación de variables predictoras, este archivo solo cambia, si la base de entrenamiento cambia
-min_fechas_df = pd.read_csv('.\min_fechas_predicciones.csv')
+min_fechas_df = pd.read_csv('./min_fechas_predicciones.csv')
 
 
 # Función para encontrar la fecha inicial para realizar las predicciones de acuerdo a la combinación de variables seleccionada por el usuario 
