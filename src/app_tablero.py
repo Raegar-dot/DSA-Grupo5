@@ -175,7 +175,7 @@ def generate_filters():
                                 id="anio-dropdown",
                                 options=[{'label': anio, 'value': anio} for anio in data_ad['Año'].unique()],
                                 placeholder="Seleccione un Año",
-                                value=data_ad['Año'].unique()[0],
+                                value=[data_ad['Año'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -190,7 +190,7 @@ def generate_filters():
                                 id="mes-dropdown",
                                 options=[{'label': mes, 'value': mes} for mes in data_ad['Mes'].unique()],
                                 placeholder="Seleccione uno o varios Mes",
-                                value=data_ad['Mes'].unique()[0],
+                                value=[data_ad['Mes'].unique()[0]],
                                 multi = True,
                                 style=dict(width='50%', minWidth='300px')
                             )
@@ -305,8 +305,8 @@ def generate_KPI(data_ad):
         kpi_utilidad_bruta = (data_ad["Utilidad Bruta"].sum())
 
     
-    if data_ad["Utilidad Bruta"].sum() / data_ad["Ventas"].sum() >= 1e6:
-        kpi_margen = (data_ad["Utilidad Bruta"].sum() / data_ad["Ventas"].sum())*100  #/1e6
+    if data_ad["Ventas"].sum() == 0:
+        kpi_margen = 0
     else: 
         kpi_margen = (data_ad["Utilidad Bruta"].sum() / data_ad["Ventas"].sum())*100
 
@@ -731,7 +731,8 @@ def update_output_div(canal, anio, mes, uen, canal2, regional, marquilla, produc
     fig6 = plot_time_series_2(data_ad, uen, canal2, regional, marquilla, producto)
 
     filtered_data = data_ad[(data_ad['Uen'].isin(uen)) & (data_ad['Canal Comercial'].isin(canal2)) & (data_ad['Regional'].isin(regional)) & 
-                      (data_ad['Marquilla'].isin(marquilla)) & (data_ad['Producto'].isin(producto))]
+                      (data_ad['Marquilla'].isin(marquilla)) & (data_ad['Producto'].isin(producto)) & (data_ad['Año'].isin(anio)) & 
+                      (data_ad['Mes'].isin(mes))]
 
     return fig1, fig2, fig3, go.Figure(), fig5, fig6, generate_KPI(filtered_data)
 
