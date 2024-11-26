@@ -9,6 +9,9 @@ WORKDIR /opt/dash/tablero
 # Instalar dependencias
 ADD ./tablero /opt/dash/tablero
 
+# Copiar el archivo CSV necesario al contenedor
+COPY ../../data /opt/dash/tablero/data
+
 RUN pip install --upgrade pip
 RUN pip install -r /opt/dash/tablero/requirements.txt
 
