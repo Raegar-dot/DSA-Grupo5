@@ -71,9 +71,9 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 
 # defina el servidor para llevar el registro de modelos y artefactos
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
+mlflow.set_tracking_uri("http://3.88.216.97:8050")
 # registre el experimento
-experiment = mlflow.set_experiment("sklearn-diab")
+experiment = mlflow.set_experiment("Proyecto_Prediccion_Ventas_3")
 
 # Aquí se ejecuta MLflow sin especificar un nombre o id del experimento. MLflow los crea un experimento para este cuaderno por defecto y guarda las características del experimento y las métricas definidas. 
 # Para ver el resultado de las corridas haga click en Experimentos en el menú izquierdo. 
