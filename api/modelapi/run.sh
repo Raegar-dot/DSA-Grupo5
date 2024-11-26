@@ -1,1 +1,1 @@
-uvicorn modelapi.modelapi:app --host 0.0.0.0 --port $PORT
+uvicorn modelapi:app --host 0.0.0.0 --port $PORT
