@@ -27,7 +27,7 @@ api_url = "http://{}:8001/predict".format(api_url)
 
 # Load data from gold folder
 def load_data_analisis_descriptivo():
-    data = pd.read_csv("../../data/gold/ExporteCOL2022_2023_2024_top_products.csv", sep=',')
+    data = pd.read_csv("ExporteCOL2022_2023_2024_top_products.csv", sep=',')
     #data = pd.read_csv("ExporteCOL2022_2023_2024_top_products.csv", sep=',')
     return data
     
