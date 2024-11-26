@@ -22,7 +22,7 @@ app.config.suppress_callback_exceptions = True
 
 # PREDICTION API URL 
 api_url = os.getenv('API_URL')
-#api_url = '54.84.217.172'
+#api_url = '52.21.110.235'
 api_url = "http://{}:8001/predict".format(api_url)
 
 # Load data from gold folder
@@ -938,4 +938,4 @@ def update_output_div(canal, anio, mes, uen, canal2, regional, marquilla, produc
 # Run the server
 if __name__ == "__main__":
     logger.info("Running dash")
-    app.run_server(debug=True)
+    app.run_server(host="0.0.0.0",debug=True)
