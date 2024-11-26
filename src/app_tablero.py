@@ -6,8 +6,9 @@ import plotly.graph_objs as go
 import numpy as np
 import pandas as pd
 import datetime as dt
-
-
+import requests
+import json
+from loguru import logger
 
 app = dash.Dash(
     __name__,
@@ -18,6 +19,10 @@ app.title = "Dashboard pronóstico ventas"
 server = app.server
 app.config.suppress_callback_exceptions = True
 
+# PREDICTION API URL 
+# api_url = os.getenv('API_URL')
+api_url = '54.84.217.172'
+api_url = "http://{}:8001/predict".format(api_url)
 
 # Load data from gold folder
 def load_data_analisis_descriptivo():
@@ -124,17 +129,45 @@ def generate_control_card():
     return html.Div(
         id="control-card",
         children=[
-            # Canal
-            html.P("Seleccionar un Canal Comercial:"),
             html.Div(
                 id="componentes-prediccion",
                 children=[
+                    html.Div(
+                        id="componente-uen2",
+                        children=[
+                            html.P("UEN"),
+                            dcc.Dropdown(
+                                id="uen-prediccion",
+                                options=[{'label': uen, 'value': uen} for uen in data_ad['Uen'].unique()],
+                                placeholder="Seleccione una Unidad de Negocio",
+                                value=data_ad['Uen'].unique()[0],
+                                style=dict(width='50%', minWidth='300px')
+                            )
+                        ],
+                        style=dict(width='20%')
+                    ),
+
+                    html.Div(
+                        id="componente-regional2",
+                        children=[
+                            html.P("Regional"),
+                            dcc.Dropdown(
+                                id="regional-prediccion",
+                                options=[{'label': regional, 'value': regional} for regional in data_ad['Regional'].unique()],
+                                placeholder="Seleccione una Regional",
+                                value=data_ad['Regional'].unique()[0],
+                                style=dict(width='50%', minWidth='300px')
+                            )
+                        ],
+                        style=dict(width='20%')
+                    ),
                     
                     html.Div(
                         id="componente-canal",
                         children=[
+                            html.P("Canal"),
                             dcc.Dropdown(
-                                id="canal-dropdown",
+                                id="canal-prediccion",
                                 options=[{'label': canal, 'value': canal} for canal in data_ad['Canal Comercial'].unique()],
                                 placeholder="Seleccione un canal",
                                 value=data_ad['Canal Comercial'].unique()[0],
@@ -143,8 +176,68 @@ def generate_control_card():
                         ],
                         style=dict(width='20%')
                     ),
+
+                    html.Div(
+                        id="componente-marquilla2",
+                        children=[
+                            html.P("Marquilla"),
+                            dcc.Dropdown(
+                                id="marquilla-prediccion",
+                                options=[{'label': marquilla, 'value': marquilla} for marquilla in data_ad['Marquilla'].unique()],
+                                placeholder="Seleccione una Marquilla",
+                                value=data_ad['Marquilla'].unique()[0],
+                                style=dict(width='50%', minWidth='300px')
+                            )
+                        ],
+                        style=dict(width='20%')
+                    ),
+
+                    html.Div(
+                        id="componente-codigo",
+                        children=[
+                            html.P("Código_producto"),
+                            dcc.Dropdown(
+                                id="codigo-prediccion",
+                                options=[{'label': codigo, 'value': codigo} for codigo in data_ad['Código Producto'].unique()],
+                                placeholder="Seleccione un Código de Producto",
+                                value=data_ad['Código Producto'].unique()[0],
+                                style=dict(width='50%', minWidth='300px')
+                            )
+                        ],
+                        style=dict(width='20%')
+                    ),
+
+                    html.Div(
+                        id="componente-producto2",
+                        children=[
+                            html.P("Producto"),
+                            dcc.Dropdown(
+                                id="producto-prediccion",
+                                options=[{'label': producto, 'value': producto} for producto in data_ad['Producto'].unique()],
+                                placeholder="Seleccione un Producto",
+                                value=data_ad['Producto'].unique()[0],
+                                style=dict(width='50%', minWidth='300px')
+                            )
+                        ],
+                        style=dict(width='20%')
+                    ),
+
+                    html.Div(
+                        id="componente-proyeccion",
+                        children=[
+                            html.P("Meses_a_proyectar"),
+                            dcc.Dropdown(
+                                id="meses-prediccion",
+                                options=list(range(1,25)),
+                                placeholder="Meses a proyectar",
+                                value=5,
+                                style=dict(width='50%', minWidth='300px')
+                            )
+                        ],
+                        style=dict(width='20%')
+                    ),
                 ],
-                style=dict(display='flex')
+                style=dict(display='flex',flexDirection='column',gap='10px',marginBottom = '20px') # Organiza los filtros en columna
             ),
         ]
     )
@@ -474,6 +567,76 @@ def plot_time_series_2(data_ad, uen, canal2, regional, marquilla, producto):
 
     return fig
 
+def plot_time_series_predict(data_ad, datos_prediccion, uen_p, regional_p, canal, marq_p, codigo_p, producto_p):
+    data_ad['Año'] = data_ad["Año"].astype(int)
+    data_ad['Mes'] = data_ad["Mes"].astype(int)
+    data_ad['Dia'] = 1
+    data_ad['Fecha'] = pd.to_datetime(data_ad['Año'].astype(str) + '-' + data_ad['Mes'].astype(str) + '-' + data_ad['Dia'].astype(str))
+    data_ad = data_ad[(data_ad['Uen'] == uen_p) & (data_ad['Canal Comercial'] == canal) & (data_ad['Regional'] == regional_p) & 
+                      (data_ad['Marquilla'] == marq_p) & (data_ad['Producto'] == producto_p) & (data_ad['Código Producto'] == codigo_p)]
+    serie_ventas = data_ad.groupby('Fecha')['Ventas'].sum().reset_index()
+
+    # Manejar el caso de datos vacíos
+    if data_ad.empty:
+        fig = go.Figure()
+        fig.update_layout(
+            title="No hay datos para la combinación de campos ingresada!",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="#E8E8E8",
+            font=dict(color="#FFFFFF"), 
+        )
+        return fig
+
+    fig = go.Figure(
+        data=[
+            go.Scatter(
+                x=serie_ventas['Fecha'],
+                y=serie_ventas['Ventas'],
+                mode = 'lines+markers',
+                line=dict(color="#3498db"),
+                name="Ventas por Fecha"
+            )
+        ]
+    )
+
+    # Agregar predicción si está disponible
+    if not datos_prediccion.empty:
+        datos_prediccion['Año'] = datos_prediccion["Año"].astype(int)
+        datos_prediccion['Mes'] = datos_prediccion["Mes"].astype(int)
+        datos_prediccion['Dia'] = 1
+        datos_prediccion['Fecha'] = pd.to_datetime(datos_prediccion['Año'].astype(str) + '-' + datos_prediccion['Mes'].astype(str) + '-' + datos_prediccion['Dia'].astype(str))
+        ultimo_hist = serie_ventas.iloc[-1]
+
+        datos_prediccion = pd.concat([
+            pd.DataFrame({'Fecha': [ultimo_hist['Fecha']], 'Ventas': [ultimo_hist['Ventas']]}),
+            datos_prediccion
+        ]).reset_index(drop=True)
+
+        fig.add_trace(
+            go.Scatter(
+                x=datos_prediccion['Fecha'],
+                y=datos_prediccion['Ventas'],
+                mode='lines',
+                line=dict(color="#e74c3c", dash='dot'),
+                name="Predicción"
+            )
+        )
+
+    # Configuración del diseño del gráfico
+    fig.update_layout(
+        title="Pronóstico de Ventas COP",
+        xaxis_title="Fecha",
+        yaxis_title="Ventas COP",
+        paper_bgcolor="rgba(0,0,0,0)",  # Fondo transparente (usa color hexadecimal si prefieres)
+        plot_bgcolor="#E8E8E8",  # Fondo del área de la gráfica
+        font=dict(color="#FFFFFF"),  # Color de texto de los ejes y título
+        xaxis = dict(   tickformat="%Y-%m",  # Formato de fecha para mostrar año y mes
+                        tickangle=45
+                        )  # Ángulo para evitar solapamiento de fechas)
+    )
+
+    return fig
+
 app.layout = html.Div(
     id="app-container",
 
@@ -689,7 +852,6 @@ app.layout = html.Div(
                         html.Div(
                             className="eight columns",
                             children=[
-                                html.B("Pronóstico de ventas por Canal"),
                                 html.Hr(),
                                 dcc.Graph(id="plot_series_5"),
                             ],
@@ -712,18 +874,25 @@ app.layout = html.Div(
      Output(component_id="plot_time_series_2", component_property="figure"),
      Output("kpi-container", "children")],
     [#Input("interval", "n_intervals"),
-     Input(component_id="canal-dropdown", component_property="value"),
+     Input(component_id="canal-prediccion", component_property="value"),
      Input(component_id="anio-dropdown", component_property="value"),
      Input(component_id="mes-dropdown", component_property="value"),
      Input(component_id="uen-dropdown", component_property="value"),
      Input(component_id="canal2-dropdown", component_property="value"),
      Input(component_id="regional-dropdown", component_property="value"),
      Input(component_id="marquilla-dropdown", component_property="value"),
-     Input(component_id="producto-dropdown", component_property="value")
+     Input(component_id="producto-dropdown", component_property="value"),
+     Input(component_id="uen-prediccion", component_property="value"),
+     Input(component_id="regional-prediccion", component_property="value"),
+     Input(component_id="marquilla-prediccion", component_property="value"),
+     Input(component_id="codigo-prediccion", component_property="value"),
+     Input(component_id="producto-prediccion", component_property="value"),
+     Input(component_id="meses-prediccion", component_property="value")
      ]
 )
-def update_output_div(canal, anio, mes, uen, canal2, regional, marquilla, producto):
+def update_output_div(canal, anio, mes, uen, canal2, regional, marquilla, producto, uen_p, regional_p, marq_p, codigo_p, producto_p, meses_p):
 
+    print(uen)
     fig1 = plot_bar_1(data_ad)   
     fig2 = plot_bar_2(data_ad)  
     fig3 = plot_pie_chart(data_ad)
@@ -733,10 +902,39 @@ def update_output_div(canal, anio, mes, uen, canal2, regional, marquilla, produc
     filtered_data = data_ad[(data_ad['Uen'].isin(uen)) & (data_ad['Canal Comercial'].isin(canal2)) & (data_ad['Regional'].isin(regional)) & 
                       (data_ad['Marquilla'].isin(marquilla)) & (data_ad['Producto'].isin(producto)) & (data_ad['Año'].isin(anio)) & 
                       (data_ad['Mes'].isin(mes))]
+    
+    datos_prediccion = pd.DataFrame()
 
-    return fig1, fig2, fig3, go.Figure(), fig5, fig6, generate_KPI(filtered_data)
+    if ((meses_p is not None) & (uen_p is not None) & (regional_p is not None) &
+        (canal is not None) & (marq_p is not None) & (codigo_p is not None) & (producto_p is not None)):
+        myreq = {
+            
+                "meses_a_proyectar": int(meses_p),
+                "Uen": str(uen_p),
+                "Regional": str(regional_p),
+                "Canal_Comercial": str(canal),
+                "Marquilla": str(marq_p),
+                "Codigo_Producto": str(codigo_p),
+                "Producto": str(producto_p)
+        }
+        headers =  {"Content-Type":"application/json", "accept": "application/json"}
+
+        # POST call to the API
+        response = requests.post(api_url, data=json.dumps(myreq), headers=headers)
+
+        if response.status_code == 200:
+            data = response.json()
+            logger.info("Response: {}".format(data))
+
+            datos_prediccion = pd.DataFrame(data['result'])
+            datos_prediccion.iloc[0,1] = datos_prediccion.iloc[0,1] - 1
+
+    fig4 = plot_time_series_predict(data_ad, datos_prediccion, uen_p, regional_p, canal, marq_p, codigo_p, producto_p)
+
+    return fig1, fig2, fig3, fig4, fig5, fig6, generate_KPI(filtered_data)
 
 
 # Run the server
 if __name__ == "__main__":
+    logger.info("Running dash")
     app.run_server(debug=True)
