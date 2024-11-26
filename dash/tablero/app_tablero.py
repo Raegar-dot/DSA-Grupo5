@@ -8,6 +8,7 @@ import pandas as pd
 import datetime as dt
 import requests
 import json
+import os
 from loguru import logger
 
 app = dash.Dash(
@@ -20,8 +21,8 @@ server = app.server
 app.config.suppress_callback_exceptions = True
 
 # PREDICTION API URL 
-# api_url = os.getenv('API_URL')
-api_url = '54.84.217.172'
+api_url = os.getenv('API_URL')
+#api_url = '54.84.217.172'
 api_url = "http://{}:8001/predict".format(api_url)
 
 # Load data from gold folder
